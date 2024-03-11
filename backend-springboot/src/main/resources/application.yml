@@ -1,0 +1,17 @@
+spring:
+  data:
+    mongodb:
+      database: ${env.MONGO_DATABASE}
+      uri: mongodb+srv://${env.MONGO_USER}:${env.MONGO_PASSWORD}@${env.MONGO_CLUSTER}
+  security:
+    user:
+      name: user
+      password: 123
+  jpa:
+    hibernate:
+      ddl-auto: update
+  web:
+    resources:
+      add-mappings: false
+server:
+  port: 8000
