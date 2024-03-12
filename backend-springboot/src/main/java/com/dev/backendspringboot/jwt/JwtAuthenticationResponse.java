@@ -1,0 +1,9 @@
+package com.dev.backendspringboot.jwt;
+
+import lombok.Data;
+
+@Data
+public class JwtAuthenticationResponse {
+    private String token;
+    private String refreshToken;
+}
