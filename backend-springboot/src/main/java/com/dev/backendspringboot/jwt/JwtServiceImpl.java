@@ -2,11 +2,11 @@ package com.dev.backendspringboot.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
+import io.jsonwebtoken.security.SignatureException;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class JwtServiceImpl implements JwtService{
         token.setToken(Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+JwtConstant.JWT_EXPIRATION))
+                .setExpiration(new Date(System.currentTimeMillis() + JwtConstant.JWT_EXPIRATION))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact());
         return token;
@@ -36,7 +36,7 @@ public class JwtServiceImpl implements JwtService{
         token.setToken(Jwts.builder().setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+JwtConstant.JWT_EXPIRATION))
+                .setExpiration(new Date(System.currentTimeMillis() + JwtConstant.JWT_EXPIRATION))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact());
         return token;
@@ -46,25 +46,22 @@ public class JwtServiceImpl implements JwtService{
         try {
             return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
         } catch (SignatureException e) {
-
-// TODO:           chữ ký của JWT không hợp lệ.
-            System.out.println("Invalid JWT signature -> Message: "+e.getMessage());
-        } catch (MalformedJwtException e) {
-// TODO:           JWT không thể được phân tích cú pháp
-            System.out.println("Invalid JWT token -> Message: "+ e.getMessage());
+// DONE:           chữ ký của JWT không hợp lệ.
+            throw new SignatureException(e.getMessage());
+        }catch (DecodingException e) {
+// DONE:           JWT có khoảng cách
+            throw new DecodingException(e.getMessage());
+        }catch (MalformedJwtException e) {
+// DONE:           JWT không thể được phân tích cú pháp
+            throw new MalformedJwtException(e.getMessage());
         } catch (ExpiredJwtException e) {
-// TODO:          JWT đã hết hạn.
-            System.out.println("Expired JWT token -> Message: "+e.getMessage());
-        } catch (UnsupportedJwtException e) {
-// TODO:          JWT có một định dạng không được hỗ trợ.
-            System.out.println("Unsupported JWT token -> Message: "+e.getMessage());
+// DONE:          JWT đã hết hạn.
+            throw new ExpiredJwtException(null,null,e.getMessage());
         } catch (IllegalArgumentException e) {
-// TODO:           chuỗi yêu cầu của JWT rỗng
-            System.out.println("JWT claims string is empty -> Message:"+e.getMessage());
+// DONE:           chuỗi yêu cầu của JWT rỗng
+            throw new IllegalArgumentException(e.getMessage());
         }
-        return null;
     }
-
     private <T> T extraClaim(String token, Function<Claims,T> ClaimsResolve){
         final Claims claims = extraToken(token);
         return ClaimsResolve.apply(claims);
