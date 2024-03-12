@@ -22,6 +22,7 @@ public class UserDocument {
     private String lastName;
     private String email;
     private String password;
+    private boolean isEnabled;
     @DBRef
     private List<Role> roles;
 }
