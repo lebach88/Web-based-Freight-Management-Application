@@ -1,12 +1,13 @@
 package com.dev.backendspringboot.security;
 
+import com.dev.backendspringboot.api.error.UsernameNotFoundException;
 import com.dev.backendspringboot.document.UserDocument;
 import com.dev.backendspringboot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 @Service

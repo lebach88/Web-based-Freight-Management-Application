@@ -56,7 +56,7 @@ public class JwtServiceImpl implements JwtService{
             throw new MalformedJwtException(e.getMessage());
         } catch (ExpiredJwtException e) {
 // DONE:          JWT đã hết hạn.
-            throw new ExpiredJwtException(null,null,e.getMessage());
+            throw new ExpiredJwtException(e.getHeader(),null,e.getMessage());
         } catch (IllegalArgumentException e) {
 // DONE:           chuỗi yêu cầu của JWT rỗng
             throw new IllegalArgumentException(e.getMessage());
