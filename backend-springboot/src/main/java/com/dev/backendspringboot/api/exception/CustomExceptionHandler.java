@@ -1,9 +1,6 @@
 package com.dev.backendspringboot.api.exception;
 
-import com.dev.backendspringboot.api.error.ApiError;
-import com.dev.backendspringboot.api.error.ProductNotFoundException;
-import com.dev.backendspringboot.api.error.RoleNotFoundException;
-import com.dev.backendspringboot.api.error.ServerErrorException;
+import com.dev.backendspringboot.api.error.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -18,7 +15,7 @@ import java.time.ZonedDateTime;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
-    @ExceptionHandler({RoleNotFoundException.class, ProductNotFoundException.class})
+    @ExceptionHandler({RoleNotFoundException.class, ProductNotFoundException.class, PackageNotFoundException.class})
     public ResponseEntity<ApiError> handlerRoleNotFoundException(RuntimeException ex){
         ApiError apiError = new ApiError();
         apiError.setStatusCode(HttpStatus.NOT_FOUND.value());

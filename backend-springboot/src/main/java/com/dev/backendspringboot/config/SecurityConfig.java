@@ -1,5 +1,6 @@
 package com.dev.backendspringboot.config;
 
+import com.dev.backendspringboot.api.exception.CustomAccessDeniedHandler;
 import com.dev.backendspringboot.jwt.JwtAuthenticationFilter;
 import com.dev.backendspringboot.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -31,9 +33,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/v1/auth/*").permitAll();
-                    auth.requestMatchers("/api/v1/admin/*","/api/v1/role/*").hasAnyAuthority("ADMIN");
-                    auth.requestMatchers("/api/v1/user/*").hasAnyAuthority("USER");
+                    auth.requestMatchers("/api/v1/auth/*","/api/v1/role/*").permitAll();
+                    auth.requestMatchers("/api/v1/admin/*").hasAnyAuthority("ADMIN");
+                    auth.requestMatchers("/api/v1/product/*","api/v1/package/*").hasAnyAuthority("USER");
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(manage -> manage.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -42,6 +44,10 @@ public class SecurityConfig {
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
                 )
                 .build();
+    }
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
     }
     @Bean
     public PasswordEncoder passwordEncoder(){
