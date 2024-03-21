@@ -5,16 +5,16 @@
   
           <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
             <li>
-              <router-link to="/" class="nav-link px-2 text-white">Home</router-link>
+              <router-link to="/" class="nav-link px-2 text-white">Trang chủ</router-link>
             </li>
             <li>
-              <router-link to="/product" class="nav-link px-2 text-white">Products</router-link>
+              <router-link to="/product" class="nav-link px-2 text-white">Hàng hóa</router-link>
             </li>
           </ul>
   
-          <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-            <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
-          </form>
+          <div class="col-12 col-lg-auto text-white p-2">
+            {{ message }}
+          </div>
   
           <div class="text-end" v-if="!auth">
             <router-link to="/login" type="button" class="btn btn-outline-light me-2">Login</router-link>
@@ -30,7 +30,7 @@
     </header>
   </template>
   <script>
-  import {computed} from "vue";
+  import {computed, ref} from "vue";
   import axios from "axios";
   import {useStore} from "vuex";
   
@@ -39,18 +39,19 @@
     setup(){
       const store = useStore();
       const auth = computed(() => store.state.auth);
+      const message = computed(() => store.state.message); // access message
       const logout = async () =>{
         localStorage.removeItem('token');
         axios.defaults.headers.common['Authorization'] = '';
-  
+        await store.dispatch('setMessage','')
         await store.dispatch('setAuth',false);
       }
   
       return {
         auth,
-        logout
+        logout,
+        message
       }
     }
   }
-  </script>
-  
+</script>

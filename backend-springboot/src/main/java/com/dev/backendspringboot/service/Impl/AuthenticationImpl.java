@@ -14,16 +14,14 @@ import com.dev.backendspringboot.repository.RoleRepository;
 import com.dev.backendspringboot.repository.UserRepository;
 import com.dev.backendspringboot.security.CustomUserDetails;
 import com.dev.backendspringboot.service.Authentication;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class AuthenticationImpl implements Authentication {
@@ -115,4 +113,24 @@ public class AuthenticationImpl implements Authentication {
             throw new ServerErrorException("Đã xảy ra lỗi khi lấy lại token ", ex);
         }
     }
+
+    @Override
+    public CustomUserDetails getProfile(HttpServletRequest request) {
+        if (request == null) {
+            return null;
+        }
+        return new CustomUserDetails(getUserDocument(request));
+    }
+
+    private UserDocument getUserDocument(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || authHeader.length() <= 7) {
+            return null;
+        }
+        String token = authHeader.substring(7);
+        String email = jwtService.extraUsername(token);
+        Optional<UserDocument> userDocument = userRepository.findByEmail(email);
+        return userDocument.orElse(null);
+    }
+
 }

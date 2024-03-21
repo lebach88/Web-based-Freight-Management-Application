@@ -32,4 +32,8 @@ public class AuthController {
     public ResponseEntity<JwtAuthenticationResponse> logIn(@RequestBody Token token) {
         return ResponseEntity.ok(authentication.refreshToken(token));
     }
+    @GetMapping("/profile")
+    public ResponseEntity<CustomUserDetails> profile(HttpServletRequest request){
+        return ResponseEntity.ok(authentication.getProfile(request));
+    }
 }
