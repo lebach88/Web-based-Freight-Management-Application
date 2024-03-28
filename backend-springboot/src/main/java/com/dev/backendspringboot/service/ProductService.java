@@ -19,4 +19,6 @@ public interface ProductService {
     ProductDto updateOneProduct(String productId, ProductRequest productRequest);
 
     MessageApi deleteOneProduct(String productId);
+
+    List<ProductDto> findAllProductByUserId(String userId);
 }
